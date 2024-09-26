@@ -6,21 +6,25 @@ import {parseContactsFilterParams} from '../utils/filters/parseContactsFilterPar
 import { sortFields } from '../db/Contacts.js';
 
 export const getAllContactsController = async (req, res) => {
-  const { perPage, page } = parsePaginationParams(req.query);
+
+
+
+  const { page, perPage } = parsePaginationParams(req.query);
   const { sortBy, sortOrder } = parseSortParams({ ...req.query, sortFields });
   const filter = parseContactsFilterParams(req.query);
-    const data = await contactServices.getAllContacts({
-    perPage,
+
+  const contacts = await contactServices.getAllContacts({
     page,
+    perPage,
     sortBy,
     sortOrder,
     filter,
     });
 
-    res.json({
+  res.json({
       status: 200,
       message: 'Successfully found contacts',
-      data,
+      data: contacts,
     });
 };
 
