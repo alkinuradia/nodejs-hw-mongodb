@@ -19,26 +19,26 @@ const contactSchema = new Schema({
         default: false,
         required: true,
     },
-    // contactType:{
-    //     type: String,
-    //     enum: ["personal", "home"],
-    //     required: true,
-    // },
     contactType: {
 		type: String,
 		enum: contactList,
 		required: true,
 		default: 'personal',
     },
-    // createdAt:{
-    //     type: String,
-    //     match: createdAtRegexp,
-    //     required: true,
-    // },
-    // updatedAt:{
-    //     type: String,
-    //     required: true,
-    // }
+    createdAt:{
+        type: String,
+        required: true,
+    },
+    updatedAt:{
+        type: String,
+        required: true,
+    },
+    userId: {
+        type: String,
+        ref: "user",
+        required: true,
+    }
+
 }, {versionKey: false, timestamps: true});
 
 contactSchema.post("save", handleSaveError);
@@ -49,8 +49,6 @@ contactSchema.post("findOneAndUpdate", handleSaveError);
 
 const ContactCollection = model("contact", contactSchema);
 
-export const sortFields = ['name', 'phoneNumber', 'email', 'isFavourite', 'contactType', 'createdAt', 'updatedAt'];
-
-// const ContactCollection = model("contact", contactSchema);
+export const sortFields = ['name', 'phoneNumber', 'email', 'isFavourite', 'contactType', 'createdAt', 'updatedAt', 'userId'];
 
 export default ContactCollection;
