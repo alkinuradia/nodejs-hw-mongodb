@@ -34,7 +34,7 @@ export const getAllContactsController = async (req, res) => {
 
 export const getContactByIdController = async (req, res) => {
   // const { id } = req.params;
-  const id = req.params.contactId;
+  const {id} = req.params;
   const userId = req.user._id;
   const data = await getContactById(id, userId);
 
