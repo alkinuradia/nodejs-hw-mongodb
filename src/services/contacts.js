@@ -12,31 +12,34 @@ export const getAllContacts = async ({
     userId,
   }) => {
 	const skip = (page - 1) * perPage;
-    const limit = perPage;
+    // const limit = perPage;
     const contactsFilter = ContactCollection.find();
-
-	if (filter.type) {
+    console.log(filter)
+	    if (filter.type) {
         contactsFilter.where('contactType').equals(filter.type);
       }
 
-      if (filter.isFavourite !== null) {
+      if (filter.isFavourite) {
         contactsFilter.where('isFavourite').equals(filter.isFavourite);
       }
 
       contactsFilter.where('userId').equals(userId);
 
-      const [count, data] = await Promise.all([
-        ContactCollection.find().merge(contactsFilter).countDocuments(),
+      // const [count, data] = await Promise.all([
+      //   ContactCollection.find().merge(contactsFilter).countDocuments(),
 
-        ContactCollection.find()
-        // .merge(contactsFilter)
-          .skip(skip)
-          .limit(limit)
-          .sort({
-            [sortBy]: sortOrder,
-          })
-          .exec(),
-      ]);
+      //   ContactCollection.find()
+      //   .merge(contactsFilter)
+      //     .skip(skip)
+      //     .limit(limit)
+      //     .sort({
+      //       [sortBy]: sortOrder,
+      //     })
+      //     .exec(),
+      // ]);
+
+      const count = await ContactCollection.find().merge(contactsFilter).countDocuments();
+      const data = await contactsFilter.skip(skip).limit(perPage).sort({[sortBy]: sortOrder}).exec();
 
       const paginationInformation = calculatePaginationData(page, perPage, count);
 
