@@ -10,6 +10,7 @@ import errorHandler from "./middlewares/errorHandler.js";
 
 import authRouter from "./routers/auth.js";
 import contactsRouter from "./routers/contacts.js";
+import { UPLOAD_DIR } from './constants/index.js';
 
 export const startServer = () => {
     const app = express();
@@ -24,10 +25,11 @@ export const startServer = () => {
     app.use(notFoundHandler);
 
     app.use(errorHandler);
-
+    app.use('/uploads', express.static(UPLOAD_DIR));
     const port = Number(env("PORT", 3000));
 
     app.listen(port, ()=> console.log("Server running on port 3000"));
+
 };
 
 
