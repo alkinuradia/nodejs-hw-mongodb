@@ -6,6 +6,8 @@ import { resetPassword } from '../services/auth.js';//Створимо конт�
 
 //контролер, який буде обробляти запит на зміну пароля
 export const requestResetEmailController = async (req, res) => {
+  // console.log("--");
+  // process.exit();
     await requestResetToken(req.body.email);
     res.json({
       message: 'Reset password email was successfully sent!',
@@ -16,6 +18,8 @@ export const requestResetEmailController = async (req, res) => {
 
 //контролер, який буде обробляти  зміну пароля
 export const resetPasswordController = async (req, res) => {
+  // console.log("Misha");
+  // process.exit();
     await resetPassword(req.body);
     res.json({
       message: 'Password was successfully reset!',

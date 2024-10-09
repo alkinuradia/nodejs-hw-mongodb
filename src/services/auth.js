@@ -6,7 +6,7 @@ import {randomBytes} from "crypto";
 
 import jwt from "jsonwebtoken";
 
-// import { SMTP } from '../constants/index.js';
+import { SMTP } from '../constants/index.js';
 import { env } from '../utils/env.js';
 import { sendEmail } from '../utils/sendMail.js';
 import "dotenv/config";
@@ -20,7 +20,7 @@ import SessionCollection from "../db/Session.js";
 import UserCollection from "../db/user.js";
 
 import { FIFTEEN_MINUTES, ONE_DAY } from "../constants/users.js";
-
+const appDomain = env("APP_DOMAIN");
 const createSession = ()=> {
     const accessToken = randomBytes(30).toString("base64");
     const refreshToken = randomBytes(30).toString("base64");
@@ -123,61 +123,41 @@ export const findUser = filter => UserCollection.findOne(filter);
         },
 );
 console.log(resetToken);
-    const resetResetPasswordTemplatePath = path.join(
+    const resetPasswordTemplatePath = path.join(
         TEMPLATES_DIR,
         "reset-password-email.html",
     );
 
     const templateSource = (
-        await fs.readFile(resetResetPasswordTemplatePath)
+        await fs.readFile(resetPasswordTemplatePath)
     ).toString();
 
     const template = handlebars.compile(templateSource);
 
     const html = template({
         name: user.name,
-        link: `${env('APP_DOMAIN')}/reset-password?token=${resetToken}`,
+        link: `${appDomain}/reset-password?token=${resetToken}`,
+        // link: `google.com/reset-password?token=${resetToken}`,
     });
+    console.log(html);
 
+    try {
     await sendEmail({
-        from: env('SMTP_FROM'),
+        from: env(SMTP.SMTP_FROM),
         to: email,
         subject: 'Reset Your Password',
+        // html: `<p>Click <a target="_blank" href="${appDomain}/reset-password?token=${resetToken}">here</a> to reset your password!</p>`,
         html,
       });
-    };
+    } catch (err) {
+      console.log(err);
+      throw createHttpError(
+        500,
+        'Failed to send the email, please try again later',
+      );
+    }
+  };
 
-    // console.log(html);
-
-
-    // try {
-    //     await sendEmail({
-    //       from: env(SMTP.SMTP_FROM),
-    //       to: email,
-    //       subject: 'Reset your password',
-    //       html,
-    //     });
-    //   } catch (err) {
-    //     console.log(err);
-    //     throw createHttpError(
-    //       500,
-    //       'Failed to send the email, please try again later',
-    //     );
-    //   }
-
-
-//     const result = await sendEmail({
-//         from: env(SMTP.SMTP_FROM),
-//         to: email,
-//         subject: "Reset your password",
-//         html,
-
-//     })
-// // console.log(result);
-
-//     if(!result) {
-//         throw createHttpError(500, "Failed to send the email, please try again later.")
-//     }
 
 
 // зміна паролю, 6  модуль
@@ -201,9 +181,9 @@ export const resetPassword = async (payload) => {
       throw createHttpError(404, 'User not found');
     }
 
-    // if (!Date.now() > tokenPayload.exp) {
-	// 	throw createHttpError(401, 'Token is expired or invalid.');
-	// }
+    if (!Date.now() > tokenPayload.exp) {
+		throw createHttpError(401, 'Token is expired or invalid.');
+	}
 
     const encryptedPassword = await bcrypt.hash(payload.password, 10);
 
