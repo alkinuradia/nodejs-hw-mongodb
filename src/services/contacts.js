@@ -40,6 +40,7 @@ export const updateContact = async (id, payload, userId) => {
     { _id: id, userId },
     payload,
     { new: true },
+
   );
 };
 
