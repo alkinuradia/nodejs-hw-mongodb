@@ -23,7 +23,7 @@ authRouter.post("/refresh", ctrlWrapper(authControllers.refreshController));
 
 authRouter.post("/logout", ctrlWrapper(authControllers.logoutController));
 
-authRouter.post("/request-reset-email",validateBody(requestResetEmailSchema),ctrlWrapper(authControllers.requestResetEmailController));
+authRouter.post("/send-reset-email",validateBody(requestResetEmailSchema),ctrlWrapper(authControllers.requestResetEmailController));
 
-authRouter.get("/reset-password",validateBody(resetPasswordSchema),ctrlWrapper(authControllers.resetPasswordController));
+authRouter.post("/reset-pwd",validateBody(resetPasswordSchema),ctrlWrapper(authControllers.resetPasswordController));
 export default authRouter;

@@ -137,7 +137,7 @@ console.log(resetToken);
     const html = template({
         name: user.name,
         link: `${appDomain}/reset-password?token=${resetToken}`,
-        // link: `google.com/reset-password?token=${resetToken}`,
+        // link: `google.com/reset-password?token=${resetToken}  reset-pwd`,
     });
     console.log(html);
 
